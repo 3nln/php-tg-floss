@@ -23,4 +23,14 @@ trait CommandInlineButtons
                 InlineKeyboardButton::make(text: 'Rad Etilgan Qoidalar', url: 'https://github.com/phpuzb/.github/blob/main/RULES.md'),
             );
     }
+
+    public function aboutKeyboard() : InlineKeyboardMarkup
+    {
+        return InlineKeyboardMarkup::make()
+            ->addRow(
+                InlineKeyboardButton::make(text: 'Ochiq Havolalar', url: 'https://github.com/phpuzb/telegram'),
+            );
+    }
+
+
 }
