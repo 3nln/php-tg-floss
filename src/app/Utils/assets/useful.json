@@ -1,0 +1,16 @@
+{
+  "videolar": [
+    {
+      "title": "Yii2 Darslari \uD83C\uDDFA\uD83C\uDDFF",
+      "url": "https://youtube.com/playlist?list=PLRmmpKJlg3SiuOQwY1wRgyLERvtOko9qm&si=oDoiwrjPmMfUHURC"
+    },
+    {
+      "title": "Yangilar uchun PHP \uD83C\uDDFA\uD83C\uDDF8",
+      "url": "https://laracasts.com/series/php-for-beginners-2023-edition"
+    },
+    {
+      "title": "Laravelni o'rganish uchun 30 kun \uD83C\uDDFA\uD83C\uDDF8",
+      "url": "https://laracasts.com/series/30-days-to-learn-laravel-11"
+    }
+  ]
+}
