@@ -10,7 +10,7 @@ use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 class RulesCommand extends Command
 {
     use CommandInlineButtons;
-    protected string $command = 'start';
+    protected string $command = 'rules';
 
     protected string $message = <<<HTML
         <b>Hurmatli guruh a'zosi...</b>
