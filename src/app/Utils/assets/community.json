@@ -1,0 +1,28 @@
+[
+  {
+    "name": "O'zbek Hamjamiyati",
+    "about": "O'zbek PHP dasturchilariga qaratilgan jamiyat",
+    "telegram": "https://t.me/yiiframework_uz",
+    "web": "https://php.org.uz/",
+    "slug": "uzbek-community"
+  },
+  {
+    "name": "O'zbek Laravel guruhi",
+    "about": "Laravel dasturchilar uchun yaratilingan guruh.",
+    "telegram": "https://t.me/laravel_uz",
+    "slug": "uzbek-laravel-group"
+  },
+  {
+    "name": "Global Laravel Guruhi",
+    "about": "Inglizcha muloqot qiladigan xalqaro laravel dasturchilar guruhi",
+    "telegram": "https://t.me/LARAVEL_DISCUSS",
+    "slug": "global-laravel-group"
+  },
+  {
+    "name": "Laravelga Oid yangiliklar",
+    "about": "Saralab olingan Laravel yangiliklari telegramingizga yetkaziladi.",
+    "telegram": "https://t.me/laravelnews",
+    "web": "https://laravel-news.com/",
+    "slug": "laravel-news"
+  }
+]
