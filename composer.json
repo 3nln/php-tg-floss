@@ -2,7 +2,8 @@
     "require": {
         "php": "^8.4",
         "nutgram/nutgram": "^4.39",
-        "vlucas/phpdotenv": "^5.6"
+        "vlucas/phpdotenv": "^5.6",
+        "ext-curl": "*"
     },
 
     "autoload": {
