@@ -6,7 +6,7 @@ let
       curl
       mbstring
       pdo
-      pdo_mysql
+      pdo_pgsql
       openssl
     ])
   );

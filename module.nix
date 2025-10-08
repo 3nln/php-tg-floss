@@ -11,7 +11,7 @@ in
 
     package = mkOption {
       type = types.package;
-      default = pkgs.callPackage ./default.nix {};
+      default = pkgs.callPackage ./. {};
     };
 
     environment = mkOption {

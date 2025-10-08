@@ -1,5 +1,5 @@
 {
-  description = "php-tg-bot - PHP community";
+  description = "PHP Uzbekistan Telegram Assistant";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -14,9 +14,9 @@
       {
         formatter = pkgs.alejandra;
 
-        packages.default = pkgs.callPackage ./default.nix { inherit pkgs; };
+        packages.default = pkgs.callPackage ./. {};
 
-        devShells.default = pkgs.callPackage ./shell.nix { inherit pkgs; };
+        devShells.default = pkgs.callPackage ./shell.nix {};
       }
     ) // {
       nixosModules.default = import ./module.nix self;
