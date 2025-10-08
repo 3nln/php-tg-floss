@@ -1,5 +1,5 @@
 {
-  description = "Dev shell for php-tg-bot";
+  description = "php-tg-bot - PHP community";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -9,29 +9,16 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs { inherit system; };
-        myPhp = pkgs.php84.withExtensions ({ all, enabled }:
-          enabled ++ (with all; [
-            curl
-            mbstring
-            pdo
-            pdo_mysql
-            openssl
-          ])
-        );
+        pkgs = nixpkgs.legacyPackages.${system};
       in
       {
-        devShells.default = pkgs.mkShell {
-          packages = [
-            myPhp
-            myPhp.packages.composer
-          ];
+        formatter = pkgs.alejandra;
 
-          shellHook = ''
-            echo "PHP $(php -v | head -n1)"
-            echo "Composer $(composer --version)"
-          '';
-        };
+        packages.default = pkgs.callPackage ./default.nix { inherit pkgs; };
+
+        devShells.default = pkgs.callPackage ./shell.nix { inherit pkgs; };
       }
-    );
+    ) // {
+      nixosModules.default = import ./module.nix self;
+    };
 }
