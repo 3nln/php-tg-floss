@@ -1,7 +1,6 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  # Keep the same PHP version and extension set as before
   php = pkgs.php84.buildEnv {
     extensions = ({ enabled, all }: enabled ++ (with all; [
       curl
@@ -19,16 +18,15 @@ pkgs.php.buildComposerProject2 (finalAttrs: {
 
   src = pkgs.lib.cleanSource ./.;
 
-  # Provide the lock file explicitly (even if .gitignored)
-  composerLock = builtins.path { path = ./composer.lock; name = "composer.lock"; };
+  composerLock = ./composer.lock;
 
-  # Use the php build with our extensions
   php = php;
 
-  # Fill this with the result from a first failed build (will suggest the hash)
-  vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+  composerStrictValidation = false;
 
-  # Link an executable that runs the bot entrypoint
+  vendorHash = "sha256-/B99+wEEQS8XaLI6fOB75e4C2yv5bY/Zb4G0Q8R25XY=";
+
+  nativeBuildInputs = [ pkgs.makeWrapper ];
   postInstall = ''
     mkdir -p $out/bin
     makeWrapper ${php}/bin/php $out/bin/php-tg-bot \

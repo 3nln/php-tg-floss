@@ -67,11 +67,9 @@ in
           Type = "simple";
           User = cfg.user;
           Group = cfg.group;
-          WorkingDirectory = cfg.workingDirectory;
           ExecStart = "${cfg.package}/bin/php-tg-bot";
           Restart = "on-failure";
           RestartSec = 5;
-          # Provide a clean env and predictable locale
           Environment = [ "PHP_INI_SCAN_DIR=" "LC_ALL=C.UTF-8" ];
           DynamicUser = false;
         }
