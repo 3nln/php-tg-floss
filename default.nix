@@ -35,6 +35,6 @@ pkgs.php.buildComposerProject2 (finalAttrs: {
   '';
 
   meta = with pkgs.lib; {
-    description = "Telegram bot in PHP packaged with Composer dependencies";
+    description = "PHP Uzbekistan Telegram Assistant";
   };
 })

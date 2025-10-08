@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs ? import <nixpkgs> {} }:
 
 let
   php = pkgs.php84.withExtensions ({ all, enabled }:
@@ -6,11 +6,8 @@ let
       curl
       mbstring
       pdo
-      pdo_pgsql
-      pdo_odbc
+      pdo_mysql
       openssl
-      imap
-      ldap
     ])
   );
 in

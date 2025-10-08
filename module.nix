@@ -12,38 +12,17 @@ in
     package = mkOption {
       type = types.package;
       default = pkgs.callPackage ./default.nix {};
-      description = "Package providing the php-tg-bot with its vendor deps.";
-    };
-
-    workingDirectory = mkOption {
-      type = types.path;
-      default = cfg.package;
-      description = "Working directory the bot runs in (should contain src and vendor).";
-    };
-
-    user = mkOption {
-      type = types.str;
-      default = "php-tg-bot";
-      description = "System user to run the service as.";
-    };
-
-    group = mkOption {
-      type = types.str;
-      default = "php-tg-bot";
-      description = "System group to run the service as.";
     };
 
     environment = mkOption {
       type = with types; attrsOf str;
       default = {};
       example = { TELEGRAM_BOT_TOKEN = "xxxx"; APP_ENV = "production"; };
-      description = "Environment variables for the bot (e.g., TELEGRAM_BOT_TOKEN).";
     };
 
     serviceConfig = mkOption {
       type = types.attrs;
       default = {};
-      description = "Extra systemd Service options to merge.";
     };
   };
 
@@ -52,10 +31,12 @@ in
       isSystemUser = true;
       group = cfg.group;
     };
+
     users.groups.${cfg.group} = {};
 
     systemd.services.php-tg-bot = {
-      description = "PHP Telegram Bot";
+      description = "PHP Uzbekistan Telegram Assistant";
+
       wantedBy = [ "multi-user.target" ];
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
@@ -64,14 +45,55 @@ in
 
       serviceConfig = mkMerge [
         {
-          Type = "simple";
           User = cfg.user;
           Group = cfg.group;
-          ExecStart = "${cfg.package}/bin/php-tg-bot";
-          Restart = "on-failure";
+          Restart = "always";
           RestartSec = 5;
-          Environment = [ "PHP_INI_SCAN_DIR=" "LC_ALL=C.UTF-8" ];
           DynamicUser = false;
+          ExecStart = "${getBin cfg.package}/bin/php-tg-bot ${genArgs {cfg = cfg;}}";
+          StateDirectory = cfg.user;
+          StateDirectoryMode = "0750";
+          # Hardening
+          CapabilityBoundingSet = [
+            "AF_NETLINK"
+            "AF_INET"
+            "AF_INET6"
+          ];
+          DeviceAllow = ["/dev/stdin r"];
+          DevicePolicy = "strict";
+          IPAddressAllow = "localhost";
+          LockPersonality = true;
+          # MemoryDenyWriteExecute = true;
+          NoNewPrivileges = true;
+          PrivateDevices = true;
+          PrivateTmp = true;
+          PrivateUsers = true;
+          ProtectClock = true;
+          ProtectControlGroups = true;
+          ProtectHome = true;
+          ProtectHostname = true;
+          ProtectKernelLogs = true;
+          ProtectKernelModules = true;
+          ProtectKernelTunables = true;
+          ProtectSystem = "strict";
+          ReadOnlyPaths = ["/"];
+          RemoveIPC = true;
+          RestrictAddressFamilies = [
+            "AF_NETLINK"
+            "AF_INET"
+            "AF_INET6"
+          ];
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          RestrictSUIDSGID = true;
+          SystemCallArchitectures = "native";
+          SystemCallFilter = [
+            "@system-service"
+            "~@privileged"
+            "~@resources"
+            "@pkey"
+          ];
+          UMask = "0027";
         }
         cfg.serviceConfig
       ];
