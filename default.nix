@@ -1,15 +1,16 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  php = pkgs.php84.buildEnv {
-    extensions = ({ enabled, all }: enabled ++ (with all; [
+  php = pkgs.php84.withExtensions ({ all, enabled }:
+    enabled ++ (with all; [
       curl
       mbstring
       pdo
       pdo_pgsql
       openssl
-    ]));
-  };
+      iconv
+    ])
+  );
 in
 
 pkgs.php.buildComposerProject2 (finalAttrs: {
@@ -30,8 +31,7 @@ pkgs.php.buildComposerProject2 (finalAttrs: {
   postInstall = ''
     mkdir -p $out/bin
     makeWrapper ${php}/bin/php $out/bin/php-tg-bot \
-      --set PHP_INI_SCAN_DIR "" \
-      --add-flags "$out/src/index.php"
+      --add-flags "$out/share/php/${finalAttrs.pname}/src/index.php"
   '';
 
   meta = with pkgs.lib; {

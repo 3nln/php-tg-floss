@@ -8,6 +8,7 @@ let
       pdo
       pdo_pgsql
       openssl
+      iconv
     ])
   );
 in
