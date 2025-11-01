@@ -6,19 +6,23 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+  }:
+    flake-utils.lib.eachDefaultSystem (
+      system: let
         pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
+      in {
         formatter = pkgs.alejandra;
 
         packages.default = pkgs.callPackage ./. {};
 
         devShells.default = pkgs.callPackage ./shell.nix {};
       }
-    ) // {
-      nixosModules.default = import ./module.nix self;
+    )
+    // {
+      nixosModules.phpuzb-telegram = import ./module.nix;
     };
 }
