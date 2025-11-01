@@ -23,6 +23,6 @@
       }
     )
     // {
-      nixosModules.phpuzb-telegram = import ./module.nix;
+      nixosModules.default = import ./module.nix self;
     };
 }
