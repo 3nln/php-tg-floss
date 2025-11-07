@@ -1,11 +1,9 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: let
+{ config, lib, pkgs, ... }:
+
+let
   cfg = config.services.phpuzb.telegram;
-in {
+in
+{
   options.services.phpuzb.telegram = {
     enable = lib.mkEnableOption "PHP Community Telegram bot service";
 
@@ -55,59 +53,60 @@ in {
         description = "Port on which nginx listens.";
       };
     };
+  };
 
-    config = lib.mkIf cfg.enable {
-      users.users.${cfg.user} = {
-        isSystemUser = true;
-        group = cfg.group;
+  config = lib.mkIf cfg.enable {
+    users.users.${cfg.user} = {
+      isSystemUser = true;
+      group = cfg.group;
+    };
+
+    users.groups.${cfg.group} = {};
+
+    systemd.services.phpuzb-telegram = {
+      description = "PHPUZB Telegram Bot Service";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+
+      serviceConfig = {
+        User = cfg.user;
+        Group = cfg.group;
+        Restart = "always";
+        WorkingDirectory = "${cfg.package}/share/php";
+        ExecStart = "${cfg.phpPackage}/bin/php ${cfg.package}/share/php/src/index.php";
+        Environment = lib.mapAttrsToList (n: v: "${n}=${v}") cfg.environment;
       };
+    };
 
-      users.groups.${cfg.group} = {};
+    services.nginx = lib.mkIf cfg.nginx.enable {
+      enable = true;
 
-      systemd.services.phpuzb-telegram = {
-        description = "PHPUZB Telegram Bot Service";
-        after = ["network.target"];
-        wantedBy = ["multi-user.target"];
-
-        serviceConfig = {
-          User = cfg.user;
-          Group = cfg.group;
-          Restart = "always";
-          WorkingDirectory = "${cfg.package}/share/php";
-          ExecStart = "${cfg.phpPackage}/bin/php ${cfg.package}/share/php/src/index.php";
-          Environment = lib.mapAttrsToList (n: v: "${n}=${v}") cfg.environment;
-        };
+      virtualHosts.${cfg.nginx.serverName} = {
+        listen = [
+          {
+            addr = "0.0.0.0";
+            port = cfg.nginx.port;
+          }
+        ];
+        root = "${cfg.package}/share/php";
+        index = "index.php";
+        locations."/".extraConfig = ''
+          try_files $uri /index.php$is_args$args;
+        '';
+        locations."~ \.php$".extraConfig = ''
+          fastcgi_pass unix:${config.services.phpfpm.pools.phpuzb.socket};
+          include ${pkgs.nginx}/conf/fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        '';
       };
+    };
 
-      services.nginx = lib.mkIf cfg.nginx.enable {
-        enable = true;
-
-        virtualHosts.${cfg.nginx.serverName} = {
-          listen = [
-            {
-              addr = "0.0.0.0";
-              port = cfg.nginx.port;
-            }
-          ];
-          root = "${cfg.package}/share/php";
-          index = "index.php";
-          locations."/".extraConfig = ''
-            try_files $uri /index.php$is_args$args;
-          '';
-          locations."~ \.php$".extraConfig = ''
-            fastcgi_pass unix:${config.services.phpfpm.pools.phpuzb.socket};
-            include ${pkgs.nginx}/conf/fastcgi_params;
-            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-          '';
-        };
-      };
-      services.phpfpm.pools.phpuzb = {
-        user = cfg.user;
-        group = cfg.group;
-        settings = {
-          "listen.owner" = cfg.user;
-          "listen.group" = cfg.group;
-        };
+    services.phpfpm.pools.phpuzb = {
+      user = cfg.user;
+      group = cfg.group;
+      settings = {
+        "listen.owner" = cfg.user;
+        "listen.group" = cfg.group;
       };
     };
   };
